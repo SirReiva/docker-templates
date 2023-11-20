@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: mysql_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - 3306:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - custom-network-mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: pma_container
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql_container
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - custom-network-mysql
+
+volumes:
+  dbdata:
+networks:
+  custom-network-mysql:
+    driver: bridge
